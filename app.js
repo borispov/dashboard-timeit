@@ -17,7 +17,8 @@ const staffMenu   = document.querySelector('[data-type="stafflist-menu"]')
 
 const local         = 'http://localhost:3030/'
 const API_HOST      = 'https://nathan.borisky.me/'
-const API_BY_MONTH  = API_HOST + '2020/june'
+const API_BY_MONTH  = month => API_HOST + '2020/july'
+// const API_BY_MONTH  = API_HOST + '2020/july'
 
 const isOlderThan = time => date => new Date().getTime() - date > time
 const isOlderThanFourHours = isOlderThan(1.44e+7)
@@ -33,7 +34,7 @@ async function getCurrentMonthRepots() {
       return parsedData
     }
   }
-  const response = await axios.get(API_BY_MONTH)
+  const response = await axios.get(API_BY_MONTH('july'))
   if (!response) {
     console.log('Unable to receive data')
     return
