@@ -16,7 +16,7 @@ const employeeRep = document.getElementById("emp-reports")
 const staffMenu   = document.querySelector('[data-type="stafflist-menu"]')
 
 const local         = 'http://localhost:3030/'
-const API_HOST      = 'https://nathan.borisky.me/'
+const API_HOST      = 'https://junidev.com/'
 const API_BY_MONTH  = month => API_HOST + '2020/august'
 // const API_BY_MONTH  = API_HOST + '2020/july'
 
