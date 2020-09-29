@@ -16,8 +16,8 @@ const employeeRep = document.getElementById("emp-reports")
 const staffMenu   = document.querySelector('[data-type="stafflist-menu"]')
 
 const local         = 'http://localhost:3030/'
-const API_HOST      = 'https://junidev.com/'
-const API_BY_MONTH  = month => API_HOST + '2020/august'
+const API_HOST      = 'https://nathan.rispov.com/'
+const API_BY_MONTH  = month => API_HOST + '2020/september'
 // const API_BY_MONTH  = API_HOST + '2020/july'
 
 const isOlderThan = time => date => new Date().getTime() - date > time
@@ -34,7 +34,7 @@ async function getCurrentMonthRepots() {
       return parsedData
     }
   }
-  const response = await axios.get(API_BY_MONTH('july'))
+  const response = await axios.get(API_BY_MONTH('september'))
   if (!response) {
     console.log('Unable to receive data')
     return
