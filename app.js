@@ -14,27 +14,36 @@ const root        = document.getElementById("root")
 const staffList   = document.getElementById("staffList")
 const employeeRep = document.getElementById("emp-reports")
 const staffMenu   = document.querySelector('[data-type="stafflist-menu"]')
+const monthEl     = document.getElementById("month")
+
 
 const local         = 'http://localhost:3030/'
 const API_HOST      = 'https://nathan.rispov.com/'
-const API_BY_MONTH  = month => API_HOST + '2020/september'
+const API_BY_MONTH  = month => API_HOST + '2020/' + month
 // const API_BY_MONTH  = API_HOST + '2020/july'
 
 const isOlderThan = time => date => new Date().getTime() - date > time
 const isOlderThanFourHours = isOlderThan(1.44e+7)
 
+// Month Selector Listener
+monthEl.addEventListener("change", async function() {
+  const { empFiles, employees } = await getCurrentMonthRepots()
+  populateReports(empFiles)
+})
+
 // methods
 async function getCurrentMonthRepots() {
-  const storageData = localStorage.getItem("data")
-  if (storageData) {
-    const parsedData = JSON.parse(storageData)
-    if (!isOlderThanFourHours(parsedData.addedAt)) {
-      console.log('data is not older than four hours')
-      console.log("reading data from local storage")
-      return parsedData
-    }
-  }
-  const response = await axios.get(API_BY_MONTH('september'))
+  // Cheap Cache
+  // const storageData = localStorage.getItem("data")
+  // if (storageData) {
+  //   const parsedData = JSON.parse(storageData)
+  //   if (!isOlderThanFourHours(parsedData.addedAt)) {
+  //     console.log('data is not older than four hours')
+  //     console.log("reading data from local storage")
+  //     return parsedData
+  //   }
+  // }
+  const response = await axios.get(API_BY_MONTH(monthEl.value))
   if (!response) {
     console.log('Unable to receive data')
     return
@@ -92,6 +101,28 @@ function clearTable(){
   if (t) root.removeChild(t)
 }
 
+function clearRecents (){
+  // Ugly, Dirty Trick to remove all children.
+  recentRep.innerHTML = ""
+}
+
+
+function populateReports (reports) {
+  clearRecents()
+  reports.map(file => {
+    const li = createEl('li')
+    const a  = createEl('a')
+    setAtt("href", "#")(a)
+    addClasses(['list-inline-item', 'px-2', 'w-25'])(li)
+    setHTML(file.employeeName + '_' + file.patientName)(a)
+    li.appendChild(a)
+    recentRep.appendChild(li)
+    li.addEventListener('click', function() {
+      clearTable()
+      createTable(file.data)
+    }) 
+  })
+}
 
 document.addEventListener("DOMContentLoaded", async function() {
   const { empFiles, employees } = await getCurrentMonthRepots()
@@ -138,6 +169,10 @@ function getEmployeeData(employee, reports) {
   const empReports = reports.filter(report => report.employeeName.split(' ')[0] === employee)
   const transformed = empReports.map( ({ patientName, month, data}) => ({ patientName, month, data}))
   return transformed
+}
+
+// POPULATE Month Selection
+function populateMonthSelection () {
 }
 
 // SHOW INDIVIDUAL EMPLOYEE REPORT
