@@ -19,7 +19,7 @@ const monthEl     = document.getElementById("month")
 
 const local         = 'http://localhost:3030/'
 const API_HOST_OLD  = 'https://nathan.rispov.com/'
-const API_HOST      = 'https://pashutyafe.com'
+const API_HOST      = 'https://pashutyafe.com/'
 const API_BY_MONTH  = month => API_HOST + '2021/' + month
 // const API_BY_MONTH  = API_HOST + '2020/july'
 
