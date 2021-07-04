@@ -136,7 +136,7 @@ document.addEventListener("DOMContentLoaded", async function() {
     setHTML(file.employeeName + '_' + file.patientName)(a)
     li.appendChild(a)
     recentRep.appendChild(li)
-    i.addEventListener('click', function() {
+    li.addEventListener('click', function() {
       clearTable()
       createTable(file.data)
     }) 
