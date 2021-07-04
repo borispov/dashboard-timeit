@@ -18,7 +18,8 @@ const monthEl     = document.getElementById("month")
 
 
 const local         = 'http://localhost:3030/'
-const API_HOST      = 'https://nathan.rispov.com/'
+const API_HOST_OLD  = 'https://nathan.rispov.com/'
+const API_HOST      = 'https://pashutyafe.com'
 const API_BY_MONTH  = month => API_HOST + '2021/' + month
 // const API_BY_MONTH  = API_HOST + '2020/july'
 
@@ -135,7 +136,7 @@ document.addEventListener("DOMContentLoaded", async function() {
     setHTML(file.employeeName + '_' + file.patientName)(a)
     li.appendChild(a)
     recentRep.appendChild(li)
-    li.addEventListener('click', function() {
+    i.addEventListener('click', function() {
       clearTable()
       createTable(file.data)
     }) 
