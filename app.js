@@ -18,13 +18,8 @@ const monthEl     = document.getElementById("month")
 
 
 const local         = 'http://localhost:3030/'
-const API_HOST_OLD  = 'https://nathan.rispov.com/'
-const API_HOST      = 'https://pashutyafe.com/'
-const API_BY_MONTH  = month => API_HOST + '2021/' + month
-// const API_BY_MONTH  = API_HOST + '2020/july'
-
-const isOlderThan = time => date => new Date().getTime() - date > time
-const isOlderThanFourHours = isOlderThan(1.44e+7)
+const API_HOST      = 'https://nathan.rispov.com/report/'
+const API_BY_MONTH  = month => API_HOST + month
 
 // Month Selector Listener
 monthEl.addEventListener("change", async function() {
@@ -34,25 +29,15 @@ monthEl.addEventListener("change", async function() {
 
 // methods
 async function getCurrentMonthRepots() {
-  // Cheap Cache
-  // const storageData = localStorage.getItem("data")
-  // if (storageData) {
-  //   const parsedData = JSON.parse(storageData)
-  //   if (!isOlderThanFourHours(parsedData.addedAt)) {
-  //     console.log('data is not older than four hours')
-  //     console.log("reading data from local storage")
-  //     return parsedData
-  //   }
-  // }
-  const response = await axios.get(API_BY_MONTH(monthEl.value))
+  const response = await axios.get(API_HOST + monthEl.value);
   if (!response) {
     console.log('Unable to receive data')
     return
   }
   const data = {
-    employees: [...new Set(response.data.empFiles.map(a => a.employeeName.split(' ')[0]))],
-    filenames: response.data.empFiles.map(a => a.employeeName + '-' + a.patientName),
-    empFiles: response.data.empFiles,
+    employees: [...new Set(response.data.data.map(a => a.employee_name.split(' ')[0]))],
+    filenames: response.data.data.map(a => a.employee_name + '-' + a.client_name),
+    empFiles: response.data.data,
     addedAt: new Date().getTime()
   }
   localStorage.setItem("data", JSON.stringify(data))
@@ -115,12 +100,12 @@ function populateReports (reports) {
     const a  = createEl('a')
     setAtt("href", "#")(a)
     addClasses(['list-inline-item', 'px-2', 'w-25'])(li)
-    setHTML(file.employeeName + '_' + file.patientName)(a)
+    setHTML(file.employee_name + '_' + file.patient_name)(a)
     li.appendChild(a)
     recentRep.appendChild(li)
     li.addEventListener('click', function() {
       clearTable()
-      createTable(file.data)
+      createTable(file.csv_string)
     }) 
   })
 }
@@ -133,12 +118,12 @@ document.addEventListener("DOMContentLoaded", async function() {
     const a  = createEl('a')
     setAtt("href", "#")(a)
     addClasses(['list-inline-item', 'px-2', 'w-25'])(li)
-    setHTML(file.employeeName + '_' + file.patientName)(a)
+    setHTML(file.employee_name + '_' + file.client_name)(a)
     li.appendChild(a)
     recentRep.appendChild(li)
     li.addEventListener('click', function() {
       clearTable()
-      createTable(file.data)
+      createTable(file.csv_string)
     }) 
   })
   
@@ -165,11 +150,11 @@ $(".sidebar").mouseleave(function () {
 })
 
 // extract employee reports, transform into an object with following structure
-// Object { patientName, data, month }
+// Object { client_name, data, month }
 function getEmployeeData(employee, reports) {
-  const empReports = reports.filter(report => report.employeeName.split(' ')[0] === employee)
-  const transformed = empReports.map( ({ patientName, month, data}) => ({ patientName, month, data}))
-  return transformed
+  const empReports = reports.filter(report => report.employee_name.split(' ')[0] === employee)
+  const transformed = empReports.map( ({ client_name, month, data}) => ({ client_name, month, data}))
+  return 
 }
 
 // POPULATE Month Selection
@@ -194,7 +179,7 @@ function individualReport (name, reports) {
     const li   = createEl('li')
     addClasses(['list-inline'])(list)
     addClasses(['list-inline-item', 'py-2', 'report-list-item'])(li)
-    setHTML(report.patientName + '-' + report.month)(li)
+    setHTML(report.client_name + '-' + report.month)(li)
     list.appendChild(li)
     li.addEventListener('click', function() {
       clearTable()
